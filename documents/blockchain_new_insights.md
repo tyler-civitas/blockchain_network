@@ -15,6 +15,8 @@ Wallets are just a collection of addresses. The addresses are abstracted out int
 ## 3 Bitcoin is pure mathematics
 Bitcoin Core is the software implementation of bitcoin. Bitcoin itself is just the cryptographic transaction system, block mining, and blockchain specification. Bitcoin Core and Blockchain are just an 'instance' of Bitcoin as envisioned by the Satoshi Paper. Technically, we could start a second blockchain with it's own network of nodes that is completely unrelated to the existing one.  
 
+In fact, there is a second 'test' blockchain that is used by bitcoin developers to test implementations using bitcoin core
+
 ## 4 Address versus Public Key
 It took me forever to figure out why the redundant address/public key thing was going on.
 
@@ -32,18 +34,23 @@ Computer scientists with cryptography skills can demand 200-300k to work as cryp
 
 I noticed this because I started get job ads popping up at me after googles search engine figured out I was looking at bitcoin development stuff.
 
+## 7 Transactions must distribute ALL of a previous payment
+
+![sample](https://raw.githubusercontent.com/tylerc-atx/blockchain_network/master/documents/images/sample_transaction.png)
+
+A new transaction must distribute ALL of the previous transaction's coins. The above transaction distributes a payment to somebody, stores the extra money in a new address (presumably owned by the sender), and loses a little bit of money as a fee to the miner who will post the transaction in his block.
 
 # Fun Facts
 
 ## Bitcoin Nodes
 
-![nodes][https://raw.githubusercontent.com/tylerc-atx/blockchain_network/master/documents/images/nodecount.png]
+![nodes](https://raw.githubusercontent.com/tylerc-atx/blockchain_network/master/documents/images/nodecount.png)
 
 2,168 nodes in the USA (+1 including Tyler's new AWS node!)
 
 ## Bitcoin key derivation flowchart
 
-![keys][https://raw.githubusercontent.com/tylerc-atx/blockchain_network/master/documents/images/bitcoinkeys-s588.png]
+![keys](https://raw.githubusercontent.com/tylerc-atx/blockchain_network/master/documents/images/bitcoinkeys-s588.png)
 
 2,168 nodes in the USA (+1 including Tyler's new AWS node!)
 
