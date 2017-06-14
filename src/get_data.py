@@ -3,9 +3,12 @@ from requests.auth import HTTPBasicAuth
 import json
 
 
-
-
-def node_rpc(cmd="getblockchaininfo", verbose=False):
+def node_rpc(
+          rpc_id="test",
+          cmd="getblockchaininfo",
+          verbose=False,
+          url='http://localhost:2000',
+          params=None):
 
     credfile = "/Users/tyler/.aws/bitnodecreds"
     with open(credfile) as f:
@@ -19,12 +22,13 @@ def node_rpc(cmd="getblockchaininfo", verbose=False):
 
     data = {
         "jsonrpc": 1,
-        "id": "test",
-        "method": cmd
+        "id": rpc_id,
+        "method": cmd,
+        "params": params
            }
 
     r = requests.post(
-        url='http://localhost:2000',
+        url=url,
         headers=heads,
         data=json.dumps(data),
         auth=auth
@@ -46,14 +50,15 @@ def print_response_attrs(r):
            'ok', 'reason', 'status_code', 'url'
                ]
         for item in attrs:
-            print "{:40} : {}".format(item, getattr(r, item))
+            print "{:20} : {}".format(item, getattr(r, item))
 
         print "\n"
         print "-" * 50
         print "HEADERS"
         print "-" * 50
         for i, v in r.headers.items():
-            print "{:40} : {:40}".format(i, v)
+            print "{:20} : {:40}".format(i, v)
+        print "\n"
 
 
 if __name__ == "__main__":

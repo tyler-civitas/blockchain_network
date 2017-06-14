@@ -36,9 +36,17 @@ I noticed this because I started get job ads popping up at me after googles sear
 
 ## 7 Transactions must distribute ALL of a previous payment
 
+ * Addresses can never be reused after they are output
+
 ![sample](https://raw.githubusercontent.com/tylerc-atx/blockchain_network/master/documents/images/sample_transaction.png)
 
 A new transaction must distribute ALL of the previous transaction's coins. The above transaction distributes a payment to somebody, stores the extra money in a new address (presumably owned by the sender), and loses a little bit of money as a fee to the miner who will post the transaction in his block.
+
+## 8 There is no transaction link going forward up the blockchain
+
+Each 'output point' is simply a transaction output that has a 'script signature' that only one person can use to seize the transaction output and create a new transaction. This often results in multiple inputs to a single transaction.
+
+One issue is that the entire blockchain needs to be parsed to find an old output that has never been spent.
 
 # Fun Facts
 
