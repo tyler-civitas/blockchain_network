@@ -93,17 +93,22 @@ def trace_transaction(hex_txid, outidx=None, outtxid=None, distance=5):
 
     # Recursively go back into all VIN transactions
     for vin in result[u'vin']:
-        input_hex_txid = vin[u'txid']
         #print type(vin)
         if vin.get(u'coinbase', None):
             print "Coinbase transaction"
-            DG.edge[hex_txid][outtxid]['coinbase'] = vin[u'coinbase']
-        else:
+            DG.edge[hex_txid][outtxid]['coinbase'] = True
+            newDG = None
+        elif vin[u'txid']:
+            input_hex_txid = vin[u'txid']
             newDG = trace_transaction(
                 input_hex_txid,
                 outidx=vin[u'vout'], #outpoint is simply the index number
                 outtxid=hex_txid,
                 distance=distance - 1)
+        else:
+            print "No coinbase or txid found"
+            newDG = None
+
         if newDG:
             DG.add_edges_from(newDG)
 
