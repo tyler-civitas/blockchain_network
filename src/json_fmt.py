@@ -65,14 +65,14 @@ def trace_transaction(hex_txid, outidx=None, outtxid=None, distance=5):
 
     print "Recursion Layer {}".format(distance)
     if distance == -1:
-        return None
+        return (None, None)
 
     sleep(2)
     result = get_transaction(hex_txid)
 
     if result == None: #################NEED TO ADD SUPPORT FOR COINBASE
         print "Transaction Not Found"
-        return None
+        return (None, None)
 
 
     DG = nx.DiGraph()
@@ -82,42 +82,43 @@ def trace_transaction(hex_txid, outidx=None, outtxid=None, distance=5):
     for i, out in enumerate(result[u'vout']):
         addresses = str(out[u'scriptPubKey'][u'addresses'])
         value = out[u'value']
-        transaction = False
+        txout = 'TXOUT'
         if i == outidx:
             addresses = outtxid
-            transaction = True
+            txout = "TRACING"
 
         print "Adding edge, {}, {}, {}".format(hex_txid, addresses, value)
         DG.add_edge(hex_txid, addresses, weight=value)
-        DG.edge[hex_txid][addresses]['transaction'] = transaction
+        DG.node[addresses]['type'] = txout
 
     # Recursively go back into all VIN transactions
     for vin in result[u'vin']:
         #print type(vin)
         if vin.get(u'coinbase', None):
             print "Coinbase transaction"
-            DG.edge[hex_txid][outtxid]['coinbase'] = True
-            newDG = None
+            DG.node[hex_txid]['type'] = "COINBASE"
+            newDGedges, newDGnodes = None, None
         elif vin[u'txid']:
             input_hex_txid = vin[u'txid']
-            newDG = trace_transaction(
+            newDGedges, newDGnodes = trace_transaction(
                 input_hex_txid,
                 outidx=vin[u'vout'], #outpoint is simply the index number
                 outtxid=hex_txid,
                 distance=distance - 1)
         else:
             print "No coinbase or txid found"
-            newDG = None
+            newDGedges, newDGnodes = None, None
 
-        if newDG:
-            DG.add_edges_from(newDG)
+        if newDGedges:
+            DG.add_edges_from(newDGedges)
+            DG.add_nodes_from(newDGnodes)
 
-    return DG.edges(data=True)
+    return (DG.edges(data=True), DG.nodes(data=True))
 
 
 
 if __name__ == "__main__":
-    # j = get_transaction(u'dd3bc0242502cccf0d24f1650fd398373ff68b43b366bacb0d481fe4323747fc')
+    #j = get_transaction(u'dd3bc0242502cccf0d24f1650fd398373ff68b43b366bacb0d481fe4323747fc')
     # ha = get_block_hash(470000)
     # print ha
     # j = get_block(ha)
@@ -126,6 +127,6 @@ if __name__ == "__main__":
     print j
 
 
-    DG = nx.DiGraph()
-    DG.add_weighted_edges_from(j)
+    #DG = nx.DiGraph()
+    #DG.add_weighted_edges_from(j)
     # DG.node[address]['TX'] = True
